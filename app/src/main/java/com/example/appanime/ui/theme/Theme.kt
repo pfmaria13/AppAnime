@@ -1,46 +1,36 @@
 package com.example.appanime.ui.theme
 
-import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Shapes
+import androidx.compose.material.Typography
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Green10,
-    secondary = White80,
-    tertiary = Green80
+// Определение типографики
+val AppTypography = Typography(
+    body1 = TextStyle(
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp
+    )
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = Green10,
-    secondary = GreenGrey,
-    tertiary = Green80
+// Определение форм (shapes)
+val AppShapes = Shapes(
+    small = RoundedCornerShape(4.dp),   // Инициализация small
+    medium = RoundedCornerShape(4.dp),  // Инициализация medium
+    large = RoundedCornerShape(0.dp)     // Инициализация large
 )
 
+// Основная функция темы приложения
 @Composable
-fun AppAnimeTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
-) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
-
+fun AnimeAppTheme(content: @Composable () -> Unit) {
     MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
+        typography = AppTypography,
+        shapes = AppShapes, // Используйте инициализированный объект здесь
         content = content
     )
 }
