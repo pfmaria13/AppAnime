@@ -1,47 +1,50 @@
 package com.example.appanime
 
+import BottomNavigationBar
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.appanime.ui.theme.AppAnimeTheme
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController // Импортируем rememberNavController
+import com.example.appanime.api.ApiService
+import com.example.appanime.screens.AnimeDetailScreen
+import com.example.appanime.screens.AnimeListScreen
+import com.example.appanime.screens.HomeScreen
+import com.example.appanime.ui.theme.AnimeAppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        ApiService.init(this)
         setContent {
-            AppAnimeTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+            AnimeAppTheme {
+                Surface(color = MaterialTheme.colors.background) {
+                    val navController = rememberNavController()
+                    MainScreen(navController)
                 }
             }
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    AppAnimeTheme {
-        Greeting("Android")
+    @Composable
+    fun MainScreen(navController: NavHostController) {
+        Scaffold(
+            bottomBar = { BottomNavigationBar(navController) }
+        ) { innerPadding ->
+            NavHost(navController, startDestination = "animeList") {
+                composable("animeList") { AnimeListScreen(navController) }
+                composable("home") { HomeScreen() }
+                composable("animeDetail/{animeId}") { backStackEntry ->
+                    val animeId = backStackEntry.arguments?.getString("animeId")?.toIntOrNull()
+                    animeId?.let { AnimeDetailScreen(it, navController) }
+                }
+            }
+        }
     }
 }
